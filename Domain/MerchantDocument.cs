@@ -11,5 +11,11 @@ public class MerchantDocument
     
     [Required]
     public String Value { get; set; }
+
+    public MerchantDocument(string type, string value)
+    {
+        Type = type;
+        Value = value;
+    }
     
 }

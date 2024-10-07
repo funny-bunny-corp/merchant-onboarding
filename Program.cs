@@ -15,6 +15,8 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.CustomSchemaIds(type => type.ToString());
 });
+
+
 builder.AddNpgsqlDbContext<MerchantDbContext>("db", static settings => settings.ConnectionString = "Host=localhost;Port=5433;Database=onboarding;Username=onboarding;Password=onboarding;");
 
 builder.Services.AddScoped<MerchantRepository, PostgresMerchantRepository>();

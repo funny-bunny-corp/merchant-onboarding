@@ -20,24 +20,18 @@ public class NewMerchant
     {
         return new Merchant
         {
-            Document = new MerchantDocument()
-            {
-                Type = this.Document.Type,
-                Value = this.Document.Value
-            },
+            Document = new MerchantDocument(this.Document.Type,this.Document.Value),
             Name = this.Name,
             Email = this.Email,
             ValidUntil = this.ValidUntil,
             StartRelationship = this.StartRelationship,
-            Address = new Domain.Address{
-                Street = this.Address.Street,
-                Number = this.Address.Number,
-                Complement = this.Address.Complement,
-                City = this.Address.City,
-                Neighborhood = this.Address.Neighborhood
-            }
+            Address = new Domain.Address(this.Address.Street,
+                this.Address.Number,
+                this.Address.Complement,
+                this.Address.City,
+                this.Address.Neighborhood
+            )
         };
     }
-
-
+    
 }
