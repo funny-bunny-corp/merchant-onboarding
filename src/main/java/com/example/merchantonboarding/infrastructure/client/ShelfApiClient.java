@@ -34,7 +34,7 @@ public class ShelfApiClient implements ShelfRepository {
                 .retrieve()
                 .bodyToMono(Void.class);
         
-        // Block to maintain synchronous behavior as in the original C# code
+        // Block to maintain synchronous behavior
         response.block();
     }
 }

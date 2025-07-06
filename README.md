@@ -1,6 +1,6 @@
 # Merchant Onboarding API
 
-This is a Java Spring Boot application for managing merchant onboarding processes, converted from the original C# ASP.NET Core application while maintaining the same architecture and API contracts.
+This is a Java Spring Boot application for managing merchant onboarding processes.
 
 ## Architecture
 
@@ -208,13 +208,3 @@ mvn clean install
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Migration from C# to Java
-
-This application was converted from a C# ASP.NET Core application to Java Spring Boot while maintaining:
-- Same API contracts and endpoints
-- Same architecture and design patterns
-- Same business logic and domain models
-- Same external service integrations
-- Enhanced with comprehensive testing and documentation
-
-The conversion includes modern Java/Spring Boot practices and maintains compatibility with the original API specification.
