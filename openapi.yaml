@@ -1,0 +1,266 @@
+openapi: 3.0.3
+info:
+  title: Merchant Onboarding API
+  description: API for managing merchant onboarding process
+  version: 1.0.0
+  contact:
+    name: Development Team
+    email: dev@example.com
+    url: https://example.com
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+  - url: https://api.example.com
+    description: Production server
+
+paths:
+  /api/merchants:
+    get:
+      tags:
+        - Merchant
+      summary: Get all merchants
+      description: Retrieves a list of all merchants
+      operationId: getAllMerchants
+      responses:
+        '200':
+          description: Successfully retrieved merchants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Merchant'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
+    post:
+      tags:
+        - Merchant
+      summary: Create a new merchant
+      description: Creates a new merchant with the provided information
+      operationId: createMerchant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMerchantRequest'
+      responses:
+        '201':
+          description: Merchant created successfully
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /api/merchants/{id}:
+    get:
+      tags:
+        - Merchant
+      summary: Get merchant by ID
+      description: Retrieves a specific merchant by their ID
+      operationId: getMerchant
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Merchant ID
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successfully retrieved merchant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Merchant'
+        '404':
+          description: Merchant not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Merchant:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the merchant
+        name:
+          type: string
+          description: Merchant name
+        email:
+          type: string
+          format: email
+          description: Merchant email address
+        validUntil:
+          type: string
+          format: date-time
+          description: Date until which the merchant is valid
+        startRelationship:
+          type: string
+          format: date-time
+          description: Start date of the business relationship
+        document:
+          $ref: '#/components/schemas/MerchantDocument'
+        registrationDate:
+          type: string
+          format: date-time
+          description: Date when the merchant was registered
+        address:
+          $ref: '#/components/schemas/Address'
+      required:
+        - id
+        - name
+        - validUntil
+        - startRelationship
+        - document
+        - registrationDate
+        - address
+    
+    NewMerchantRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Merchant name
+        email:
+          type: string
+          format: email
+          description: Merchant email address
+        validUntil:
+          type: string
+          format: date-time
+          description: Date until which the merchant is valid
+        startRelationship:
+          type: string
+          format: date-time
+          description: Start date of the business relationship
+        document:
+          $ref: '#/components/schemas/DocumentDto'
+        address:
+          $ref: '#/components/schemas/AddressDto'
+      required:
+        - name
+        - validUntil
+        - startRelationship
+        - document
+        - address
+    
+    MerchantDocument:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type of document
+        value:
+          type: string
+          description: Document value/number
+      required:
+        - type
+        - value
+    
+    DocumentDto:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Type of document
+        value:
+          type: string
+          description: Document value/number
+      required:
+        - type
+        - value
+    
+    Address:
+      type: object
+      properties:
+        street:
+          type: string
+          description: Street name
+        number:
+          type: string
+          description: Street number
+        complement:
+          type: string
+          description: Address complement
+        neighborhood:
+          type: string
+          description: Neighborhood
+        city:
+          type: string
+          description: City
+      required:
+        - street
+        - number
+        - neighborhood
+        - city
+    
+    AddressDto:
+      type: object
+      properties:
+        street:
+          type: string
+          description: Street name
+        number:
+          type: string
+          description: Street number
+        complement:
+          type: string
+          description: Address complement
+        neighborhood:
+          type: string
+          description: Neighborhood
+        city:
+          type: string
+          description: City
+      required:
+        - street
+        - number
+        - neighborhood
+        - city
+    
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: Error code
+        message:
+          type: string
+          description: Error message
+        details:
+          type: string
+          description: Error details
+      required:
+        - code
+        - message

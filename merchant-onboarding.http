@@ -1,0 +1,36 @@
+### Create a new merchant
+POST http://localhost:8080/api/merchants
+Content-Type: application/json
+
+{
+  "name": "Test Merchant",
+  "email": "test@example.com",
+  "validUntil": "2024-12-31T23:59:59",
+  "startRelationship": "2024-02-01T00:00:00",
+  "document": {
+    "type": "CPF",
+    "value": "12345678901"
+  },
+  "address": {
+    "street": "Main Street",
+    "number": "123",
+    "complement": "Apt 1",
+    "neighborhood": "Downtown",
+    "city": "New York"
+  }
+}
+
+### Get all merchants
+GET http://localhost:8080/api/merchants
+
+### Get merchant by ID (replace with actual ID)
+GET http://localhost:8080/api/merchants/550e8400-e29b-41d4-a716-446655440000
+
+### Health check
+GET http://localhost:8080/actuator/health
+
+### API Documentation
+GET http://localhost:8080/swagger-ui/index.html
+
+### OpenAPI JSON
+GET http://localhost:8080/v3/api-docs

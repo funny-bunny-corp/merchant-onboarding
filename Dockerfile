@@ -1,23 +1,45 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+﻿FROM openjdk:17-jdk-slim
+
+LABEL maintainer="Development Team <dev@example.com>"
+LABEL description="Merchant Onboarding API - Java Spring Boot Application"
+
+# Set working directory
 WORKDIR /app
+
+# Copy Maven files for dependency resolution
+COPY pom.xml .
+COPY mvnw .
+COPY .mvn .mvn
+
+# Download dependencies
+RUN ./mvnw dependency:resolve
+
+# Copy source code
+COPY src ./src
+
+# Build the application
+RUN ./mvnw clean package -DskipTests
+
+# Create a non-root user for security
+RUN addgroup --system --gid 1001 appgroup && \
+    adduser --system --uid 1001 --gid 1001 --no-create-home appuser
+
+# Change ownership of the app directory
+RUN chown -R appuser:appgroup /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose the port
 EXPOSE 8080
-EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["MerchantOnboarding/MerchantOnboarding.csproj", "MerchantOnboarding/"]
-RUN dotnet restore "MerchantOnboarding/MerchantOnboarding.csproj"
-COPY . .
-WORKDIR "/src/MerchantOnboarding"
-RUN dotnet build "MerchantOnboarding.csproj" -c $BUILD_CONFIGURATION -o /app/build
+# Set environment variables
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "MerchantOnboarding.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
 
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MerchantOnboarding.dll"]
+# Run the application
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar target/merchant-onboarding-1.0.0.jar"]
